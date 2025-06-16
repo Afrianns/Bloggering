@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+}
+
+.card {
+    @apply bg-[#1d1d1d] py-3 px-7 rounded-lg border border-[#2a2a2a];
+}
+
+.button {
+    @apply py-2 rounded text-center block w-full hover:opacity-75 cursor-pointer;
+}
