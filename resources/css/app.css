@@ -18,3 +18,7 @@
 .button {
     @apply py-2 rounded text-center block w-full hover:opacity-75 cursor-pointer;
 }
+
+.cate-btn {
+    @apply  py-1 px-4 rounded border border-[#272727];
+}

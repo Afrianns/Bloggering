@@ -1,4 +1,4 @@
-<div class=" text-gray-100">
+<div class=" text-gray-100" x-data="exploreFunction" x-on:categories="showCate($event.detail)">
     <h1 class="text-2xl my-5 font-bold text-gray-400 text-center">Explore</h1>
     <div class="flex flex-col mx-auto"> 
         <form action="" wire:submit="searching">
@@ -13,7 +13,10 @@
     <p class="text-gray-400 text-sm mt-5 text-center">Search by Categories</p>
     <div class="flex gap-x-2 text-xs justify-center m-3 mb-10">
         @foreach ($categories as $category)
-        <span class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $category->name }}</span>
+            <span class="cate-btn hover:opacity-60 cursor-pointer"
+            :class="checkIfSame('{{$category->name}}') ? 'bg-[#2d2b2b]' : ''" 
+            x-on:click="selectCategory('{{ $category->name }}')"
+            >{{ $category->name }}</span>
         @endforeach
     </div>
     @foreach ($articles as $article)
@@ -27,7 +30,7 @@
             </div> 
             <div class="flex gap-x-2 text-xs">
                 @foreach ($article->categories()->get() as $article_categories)
-                <span class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</span>
+                <span class="cate-btn bg-[#2d2b2b]">{{ $article_categories->name }}</span>
                 @endforeach
             </div>
             <div class="my-5 text-sm">
@@ -36,16 +39,87 @@
             <div class="flex justify-between mt-5">
                 <a href="/dashboard/detail/{{ $article->id }}" wire:navigate class="text-orange-600 hover:underline">Detail</a>
                 @if ($article->user_id == Auth::user()->id)
-                    <a href="/dashboard/detail/edit/{{ $article->id }}" class="text-[#b7fb2f] hover:underline">Edit</a>
+                <a href="/dashboard/detail/edit/{{ $article->id }}" class="text-[#b7fb2f] hover:underline">Edit</a>
                 @endif
             </div>
-            
         </section>
     @endforeach
-    {{ $articles->links() }}
-    {{-- @if ($this->getTotalSearchedArticles > 1 ||$this->getTotalSearchedArticles == null && $articles->count() < $this->countTotalArticles)
     <div class="w-full mx-auto text-center mb-5">
-        <button class="text-green-500 hover:underline cursor-pointer" wire:click="loadMoreArticles">Load More</button>
-        </div>
-    @endif --}}
+        {{ $articles->links() }}
+    </div>
+
+    @script
+    <script>
+        Alpine.data("exploreFunction", () => ({
+
+            categoryFilter: '',
+
+            selectedCategories: [],
+            init(){
+                console.log("pas")
+                // $wire.dispatch('getCategories');
+                // $wire.on("categories", (categories) => {
+                //     console.log(categories)
+                // })
+            },
+
+            getCategories(categories){
+                // categories.forEach(category => {
+                //     this.categories.push({
+                //         name: category.name,
+                //         class: ''
+                //     })
+                // });
+
+                return categories;
+                // console.log(categories)
+            },
+
+            checkIfSame(category){
+                exist = false;
+                console.log(this.selectedCategories)
+                if(this.selectedCategories.length > 0){
+                    this.selectedCategories.forEach(select => {
+                        if(select == category){
+                            exist = true;
+                        }
+                    });
+                }
+                return exist
+            },
+
+
+            selectCategory(category){
+                
+                let index = this.selectedCategories.indexOf(category);
+                if(index == -1){
+                    $wire.filterByCategory(category)
+                    this.selectedCategories.push(category)
+                } else{
+                    $wire.filterByCategory("", index)
+                    this.selectedCategories.splice(index, 1)
+                }
+                console.log(this.selectedCategories)
+            },
+
+            checkCategory(categories){
+                if(this.categoryFilter != ''){
+                    for (const category of JSON.parse(categories)) {
+                        if(category.name == this.categoryFilter){
+                            return true;
+                        } 
+                    }
+                    return false;
+                } else{
+                    return true;
+                }
+            },
+
+            showCate(data){
+                console.log(data)
+            }
+        }))
+
+    </script>
+    @endscript
 </div>
