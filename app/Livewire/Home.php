@@ -14,41 +14,22 @@ class Home extends Component
 {
     use WithPagination;
     
-    public Collection $articles;
+    private $articles;
 
     private $categories;
     
     private $articles_categories;
 
-    private $page = 1;
-
-    public function mount()
-    {
-        $this->articles = collect();
-    }
-
     public function getAllArticlesInformations()
     {
-        $this->getArticles();
+        $this->articles = $this->getArticles();
         $this->categories = Category::all();
         $this->articles_categories = Category_post::all();
     }
 
-    public function loadMoreArticles()
-    {
-        $this->page = $this->page + 1;
-    }
-
     public function getArticles()
     {
-        $this->articles->push(...$this->articlePaginate());
-    }
-
-
-    #[Computed]
-    public function articlePaginate()
-    {
-        return Post::paginate(1, ['*'], 'page', $this->page);
+        return Post::paginate(1);
     }
 
     public function render()

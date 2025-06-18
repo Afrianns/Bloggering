@@ -1,9 +1,10 @@
 <div x-data="detailFunction">
     <section class="text-white my-5">
-        <div class="flex justify-center items-center my-10">
+        <div class="flex justify-center items-center mt-10 mb-5">
             <div class="text-center">
                 <h1 class="text-4xl font-bold">{{ $article->title }}</h1>
                 <span class="text-gray-400">{{ $article->subtitle }}</span>
+                <p class="text-gray-300 text-sm mt-5">By <a href="dashboard/detail/user/{{ $article->user->id }}" class="cursor-pointer hover:underline">{{ $article->user->name }}</a></p>
             </div>
         </div> 
         <div class="flex gap-x-2 text-xs justify-center">

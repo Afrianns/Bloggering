@@ -16,20 +16,16 @@
             <div class="my-5 text-sm">
                 {!! Str::limit($article->content, 400); !!}
             </div>
+            <p class="text-gray-300 text-sm">Written By <a href="dashboard/detail/user/{{ $article->user->id }}" class="cursor-pointer hover:underline">{{ $article->user->name }}</a></p>
             <div class="flex justify-between mt-5">
                 <a href="/dashboard/detail/{{ $article->id }}" wire:navigate class="text-orange-600 hover:underline">Detail</a>
                 @if ($article->user_id == Auth::user()->id)
                     <a href="/dashboard/detail/edit/{{ $article->id }}" class="text-[#b7fb2f] hover:underline">Edit</a>
                 @endif
             </div>
-            
         </section>
     @endforeach
-    @if ($this->articlePaginate->hasMorePages())
-        <div class="w-full mx-auto text-center">
-            <button class="text-green-500 hover:underline cursor-pointer" wire:click="loadMoreArticles">Load More</button>
-        </div>
-    @endif
+    {{ $articles->links() }}
 
     @if (session("status-success"))
         @script

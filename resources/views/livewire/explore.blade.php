@@ -36,6 +36,7 @@
             <div class="my-5 text-sm">
                 {!! Str::limit($article->content, 400); !!}
             </div>
+            <p class="text-gray-300 text-sm">Written By <a href="dashboard/detail/user/{{ $article->user->id }}" class="cursor-pointer hover:underline">{{ $article->user->name }}</a></p>
             <div class="flex justify-between mt-5">
                 <a href="/dashboard/detail/{{ $article->id }}" wire:navigate class="text-orange-600 hover:underline">Detail</a>
                 @if ($article->user_id == Auth::user()->id)

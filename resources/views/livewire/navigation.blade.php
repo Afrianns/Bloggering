@@ -6,7 +6,7 @@
         <ul class="card w-fit flex gap-5"> 
             <li class="hover:underline cursor-pointer"><a href="/dashboard" wire:navigate wire:current="font-bold underline">Home</a></li>
             <li class="hover:underline cursor-pointer"><a href="/explore" wire:navigate wire:current="font-bold underline">Explore</a></li>
-            <li class="hover:underline cursor-pointer"><a href="/profile" wire:navigate wire:current="font-bold underline">Profile</a></li>
+            <li class="hover:underline cursor-pointer"><a href="/profile/{{ Auth::user()->id }}" wire:navigate wire:current="font-bold underline">Profile</a></li>
             <hr class="border border-[#2a2a2a] h-full">
             <form action="{{ route('logout') }}" method="post">
                 @csrf

@@ -17,6 +17,12 @@ class Post extends Model
         'user_id',
     ];
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'Category_posts');
@@ -28,7 +34,9 @@ class Post extends Model
             'id' => (int) $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'category' => $this->categories()->get()
+            'category' => $this->categories()->get(),
+            'user' => $this->user()->get()
+
         ];
     }
 

@@ -117,8 +117,8 @@ return [
         'secret' => env('ALGOLIA_API_KEY', ''),
         'index-settings' => [
             Post::class => [
-                'searchableAttributes' => ['id', 'title', 'content', "category"],
-                'attributesForFaceting'=> ['filterOnly(title)'],
+                'searchableAttributes' => ['id', 'title', 'content', "category", "user"],
+                'attributesForFaceting'=> ['user.id','category.name'],
             ],
         ],
     ],

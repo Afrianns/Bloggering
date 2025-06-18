@@ -2,12 +2,51 @@
 
 namespace App\Livewire;
 
+use App\Models\Post;
+use App\Models\User;
+use Livewire\Attributes\Session;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Profile extends Component
 {
+    use WithPagination;
+
+    public $user;
+
+    #[Session]
+    public $uuid = '';
+
+    public $search = '';
+    private $articles;
+
+    public function mount(string $uuid)
+    {   
+        $this->uuid = $uuid;
+        $this->user = User::where("id", $uuid)->first();
+
+        // dd($this->user->articles()->get());
+        $this->articles = $this->loadArticlesUser();
+    }
+
+    public function searchArticles()
+    {
+        $this->articles = $this->loadArticlesUser();
+    }
+
+
+    private function loadArticlesUser()
+    {
+        return Post::search($this->search)->options([
+                'filters' => "user.id:$this->uuid"
+            ])->paginate(1);
+    }
+
     public function render()
     {
-        return view('livewire.profile');
+        
+        return view('livewire.profile',[
+            "articles" => $this->articles
+        ]);
     }
 }

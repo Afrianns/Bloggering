@@ -29,9 +29,12 @@ Route::middleware("auth")->group(function () {
     
     Route::get('/dashboard', Home::class);
     Route::get('/dashboard/detail/{uuid}', Detail::class);
+
+    Route::get('/dashboard/detail/user/{uuid}', Profile::class);
+
     Route::get('/dashboard/detail/edit/{uuid}', EditArticle::class);
     Route::get('/article/add', AddNewArticle::class);
     Route::get('/explore', Explore::class);
-    Route::get('/profile', Profile::class);
+    Route::get('/profile/{uuid}', Profile::class);
     
 })->middleware("auth");
