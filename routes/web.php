@@ -6,6 +6,7 @@ use App\Http\Controllers\UserManager;
 use App\Livewire\AddNewArticle;
 use App\Livewire\Detail;
 use App\Livewire\EditArticle;
+use App\Livewire\EditProfile;
 use App\Livewire\Explore;
 use App\Livewire\Home;
 use App\Livewire\Profile;
@@ -35,6 +36,9 @@ Route::middleware("auth")->group(function () {
     Route::get('/dashboard/detail/edit/{uuid}', EditArticle::class);
     Route::get('/article/add', AddNewArticle::class);
     Route::get('/explore', Explore::class);
+
+    // Profile Section
     Route::get('/profile/{uuid}', Profile::class);
+    Route::get("/profile/edit/{uuid}", EditProfile::class);
     
 })->middleware("auth");

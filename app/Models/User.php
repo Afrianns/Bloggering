@@ -48,6 +48,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function details()
+    {
+        return $this->hasOne(User_detail::class);
+    }
+
     public function articles()
     {
         return $this->hasMany(Post::class);

@@ -3,7 +3,7 @@
         <h1 class="text-white text-3xl">{{ $user->name }}</h1>
         <p class="text-sm">{{ $user->email }}</p>
         @if (Auth::user()->id == $user->id)
-            <a href="#" class="hover:underline text-orange-500 text-sm">Edit</a>
+            <a href="/profile/edit/{{ $user->id }}" class="hover:underline text-orange-500 text-sm">Edit</a>
         @endif
     </div>
     <div class="flex justify-between items-center mt-5">

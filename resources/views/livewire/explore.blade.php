@@ -58,10 +58,6 @@
             selectedCategories: [],
             init(){
                 console.log("pas")
-                // $wire.dispatch('getCategories');
-                // $wire.on("categories", (categories) => {
-                //     console.log(categories)
-                // })
             },
 
             getCategories(categories){
