@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use App\Models\User_detail;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
@@ -28,6 +29,11 @@ class EditProfile extends Component
         $this->name = $res->name;
         $this->email = $res->email;
 
+        if($res->details){
+            $this->address  = $res->details->address;
+            $this->description = $res->details->description;
+            $this->links  = $res->details->links;
+        }
         $this->uuid = $uuid;
     }
 
@@ -56,13 +62,30 @@ class EditProfile extends Component
 
     public function updateProfileDetails()
     {
+        
+        $this->validate([
+            "address" => "min:5",
+            "description" => "min:10",
+        ]);
+        
+        
+        $result = User_detail::updateOrCreate(
+            ["user_id" => $this->uuid],
+            ["user_id" => $this->uuid, "address" => $this->address, "description" => $this->description, "links" => json_encode($this->links)]
+        );
+
+
+        if($result){
+            return $this->dispatch('status-message', "success", "your profile details successfully updated");
+        }
+        return $this->dispatch('status-message', "failed", "profile details failed to update");
+        // dd($this->address, $this->description, json_encode($this->links), $res);
 
     }
 
-    // #[On("save-links")]
     public function gettingLinks(array $links)
     {
-        dd($links);   
+        $this->links = $links;
     } 
 
     public function render()

@@ -20,9 +20,11 @@
         <form action="" class="flex flex-col gap-y-2 my-5">
             <label for="address">Address</label>
             <input type="text" wire:model="address" class="border p-1 px-2 border-gray-100 block w-full"name="address" id="address" placeholder="type your location">
+            <div>@error('address') <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $message }}</p> @enderror</div>
 
             <label for="description">Description</label>
-            <input type="text" wire:model="description" class="border p-1 px-2 border-gray-100 block w-full"name="description" id="description" placeholder="type your profile description">
+            <textarea cols="30" rows="10" wire:model="description" class="border p-1 px-2 border-gray-100 block w-full"name="description" id="description" placeholder="type your profile description"></textarea>
+            <div>@error('description') <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $message }}</p> @enderror</div>
         
             <label for="link">Links</label>
             <template x-for="(link, id) in links">
@@ -43,7 +45,6 @@
             <button class="button bg-green-500 mt-5" @click="saveLinks()" wire:loading.remove>Update</button>
             
         </form>
-        <a href="www.google.com">click</a>
     </div>
     @script
     <script>
@@ -64,6 +65,8 @@
             ],
 
             init() {
+                console.log(JSON.parse($wire.links))
+                this.links = JSON.parse($wire.links)
 
                 $wire.on("status-message", (message) => {
                     this.popupMessage(message[0], message[1]);

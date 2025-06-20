@@ -12,6 +12,7 @@ class User_detail extends Model
         'address',
         'description',
         'links',
+        "user_id"
     ];
 
 
