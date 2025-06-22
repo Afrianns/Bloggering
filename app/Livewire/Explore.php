@@ -4,12 +4,9 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Post;
-use Illuminate\Support\Collection;
-use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
-use Livewire\Attributes\On;
 
 class Explore extends Component
 {
@@ -36,7 +33,7 @@ class Explore extends Component
 
     public function searching()
     {
-       $this->articles = Post::search($this->categoryFilter . $this->search)->paginate(1);
+       return Post::search($this->categoryFilter . $this->search)->paginate(1);
     }
 
     public function filterByCategory(string $category, $idx = null)
@@ -53,8 +50,9 @@ class Explore extends Component
 
     public function render()
     {
-        $this->searching();
+        $this->articles = $this->searching();
         return view('livewire.explore', [
+
             "articles" => $this->articles
         ]);
     }

@@ -1,0 +1,91 @@
+<div class="ml-{{ $margin }}" x-data="commentFunction">
+    <p x-text="initalData"></p>
+    @foreach ($comments as $key => $comment)
+        <div class="my-5">
+            <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
+                <section class="basis-[5%]">
+                    <div class="flex gap-y-2 w-5 flex-col items-center">
+                        <span class="p-1 bg-gray-700 border-gray-900 hover:bg-gray-800 cursor-pointer"><svg     xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M4   14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.   475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14"/></svg></span>
+                        <span class="p-1 bg-gray-700 border-gray-900 hover:bg-gray-800 rotate-180 cursor-pointer"><svg  xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" ><path d="M4   14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.   475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14"/></svg></span>
+                    </div>
+                </section>
+                <section class="basis-[95%]">
+                    <div class="my-1 flex justify-between items-center">
+                        <section class="leading-4">
+                            <h3>{{ $comment->user->name }}</h3>
+                            <span class="text-gray-400 text-xs">{{ $comment->user->email }}</span>
+                        </section>
+                        <p class="text-gray-400 text-sm">{{ Carbon\Carbon::parse($comment->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh") }}</p>
+                    </div>
+
+                    <div class="my-2">
+                        {{ $comment->comment }}
+                    </div>
+                </section>
+            </div>
+            
+            {{-- <button class="button border border-amber-500 text-amber-500 my-3 hover:text-white hover:bg-amber-500" x-on:click="showReply({{ $comment->id }})">reply</button>
+            <p x-text="{{ $comment->id }}"></p> --}}
+            {{-- x-on:submit.prevent="reply({{ $key }},{{ $comment->id }},'{{  $comment->post_id }}')"> --}}
+            <form action=""class="flex items-start gap-x-3 mt-2" wire:submit="replying({{ $comment->id }}, '{{ $comment->post_id }}')">
+                <input name="reply" id="reply" wire:model="reply.{{ $comment->id }}" class="basis-[90%] border border-gray-200 rounded-sm p-2"></textarea>
+                <button class="button basis-[10%] bg-amber-500">reply</button>
+            </form>
+            <div x-show="replyError">
+                <p class="my-1 py-1 px-2 bg-red-500 rounded" x-text="replyError"></p>
+            </div>
+            <livewire:comments.comment :comments="$comment->replies()->get()" :margin="5">
+        </div>
+    @endforeach
+    {{-- @script
+    <script>
+        Alpine.data("commentFunction", () => ({
+            
+            replyText: [],
+            comments: [],
+
+            replyError: '',
+
+            keys: {},
+
+            initalData: [],
+
+            init(){
+                $wire.on("error", () => {
+                    this.replyError = "reply cannot be empty";
+                    // console.log()
+                })
+            },
+
+            // reply(key,comment_id, post_id){
+            //     $wire.replying(key, comment_id, post_id, this.replyText[key])
+            //     console.log(key, comment_id, post_id, this.replyText[key])
+            // }
+
+            showReply(key) {
+                for (const key in this.keys) {
+                    this.keys[key] = false;
+                }
+                
+                this.keys[key] = true;
+
+                console.log(this.keys)
+            },
+
+            // isExist(commentID){
+            //     console.log("is here", commentID)
+            //     for (const key in this.keys) {
+            //         if(commentID == key){
+            //             return true;
+            //         } else{
+            //             return false;
+            //         }
+            //     //    console./log(key, commentID, this.keys);
+            //     }
+                
+            //     // return (key == this.key);
+            // }
+        }))
+    </script>
+    @endscript --}}
+</div>

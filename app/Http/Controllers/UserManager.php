@@ -45,6 +45,8 @@ class UserManager extends Controller
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
+
+        return redirect('login')->with("message", "User not found! Make sure credentials are match");
     }
 
     public function logoutPost(Request $request) {

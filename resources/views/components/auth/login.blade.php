@@ -5,6 +5,11 @@
 @section('content')
     {{-- <div class="flex justify-center items-center h-full bg-amber-50"> --}}
         <div class="text-white bg-[#272727] px-5 py-10 h-fit w-xl m-auto rounded">
+            @if (session("message"))
+                <div class="bg-red-500 py-3 px-5 rounded-md mb-5">
+                    <p class="text-red-200 font-bold">{{ session("message") }}</p>
+                </div>
+            @endif
             <h1 class="text-3xl font-bold">Login</h1>
             
             <form method="post">

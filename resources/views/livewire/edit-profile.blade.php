@@ -65,8 +65,11 @@
             ],
 
             init() {
-                console.log(JSON.parse($wire.links))
-                this.links = JSON.parse($wire.links)
+                let backLinks = $wire.links
+
+                if(backLinks){
+                    this.links = JSON.parse($wire.links)
+                }
 
                 $wire.on("status-message", (message) => {
                     this.popupMessage(message[0], message[1]);

@@ -12,27 +12,36 @@ class Detail extends Component
     public function mount(string $uuid)
     {   
         $this->article = Post::where("id", $uuid)->first();
+
+        if(!$this->article){
+            return redirect('dashboard');
+        }
     }
 
     public function deleteArticle(string $uuid)
     {
         
-        session()->flash('status-success', 'Post successfully updated.');
+        // session()->flash('status-success',"failed to delete your article");
+        // return $this->redirect("/dashboard");
+        // session()->flash('status-success', 'Post successfully updated.');
  
-        $this->redirect('/dashboard');
-        return;
+        // $this->redirect('/dashboard');
+        // return;
         // return $this->dispatch('status-message', "success", "successfully deleted your article");
 
         if($uuid){
-            $post = Post::destroy($uuid);
+            Post::destroy($uuid);
             $result = Category_post::where("post_id", $uuid)->delete();
-            dd($uuid, $result, $post);
-            // redirect('/dashboard');
-            return $this->dispatch('status-message', "success", "successfully deleted your article");
-
-        } else{
-            return $this->dispatch('status-message', "error", "failed to delete your article");
+            if($result) {
+                session()->flash('status-success', "successfully deleted your article");
+                return $this->redirect("/dashboard");
+                // return $this->dispatch('status-message', "success", "successfully deleted your article");
+            }
         }
+
+        session()->flash('status-success',"failed to delete your article");
+        return $this->redirect("/dashboard");
+        // return $this->dispatch('status-message', "error", "failed to delete your article");
     }
 
     public function render()

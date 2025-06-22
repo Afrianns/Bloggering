@@ -26,6 +26,8 @@
             @endif
         </div>
     </section>
+    <h3 class="text-gray-100">All Comments</h3>
+    <livewire:comments.comments :post_id="$article->id" :comments="$article">
     @script
     <script>
         Alpine.data("detailFunction", () => ({

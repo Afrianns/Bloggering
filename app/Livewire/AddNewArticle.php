@@ -28,6 +28,7 @@ class AddNewArticle extends Component
             'contents' => "required|min:15"
         ]);
 
+        $ca = Category::upsert($this->categories, ['name']);
         
         $po = Post::create([
             'title' => $this->title,
@@ -35,8 +36,6 @@ class AddNewArticle extends Component
             'content' => $this->contents,
             'user_id' => Auth::user()->id
         ]);
-        
-        $ca = Category::upsert($this->categories, ['name']);
 
         if($ca == count($this->categories)){
             $this->getCategories();
@@ -75,7 +74,7 @@ class AddNewArticle extends Component
     public function filteredValue($value)
     {
         $result = false;
-        foreach ($this->categories as $key => $categoryValue) {
+        foreach ($this->categories as $k => $categoryValue) {
             if(Arr::flatten($value)[0] == $categoryValue['name']){
                 $result = true;
                 break;

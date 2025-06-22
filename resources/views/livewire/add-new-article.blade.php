@@ -64,25 +64,28 @@
 
         init() {
             $wire.on("status-message", (message) => {
-                this.popupMessage(message[0], message[1]);
+                this.popupMessage(message[0], message[1])
+
+                quill.setContents('');
+                this.displayedCategories = []
+                this.selectedCategoriesKeys = []
+                this.selectedCategories = []
             })
             JSON.parse(JSON.stringify($wire.availCategories)).forEach(element => {
                 this.availCategoriesValues.push(Object.values(element)[0])
                 this.availCategoriesKeys.push(Object.keys(element)[0])
             });
             
-            console.log(this.availCategoriesKeys, this.availCategoriesValues);
             let quill = new Quill('#editor', {
                 theme: 'snow'
             });
             quill.on("text-change", (delta,oldDelta, source) => {
-                console.log(delta,oldDelta, source)
                 this.contents = quill.getSemanticHTML()
             })
         },
         dispatchInputedData(){
             // console.log(this.selectedCategories, this.selectedCategoriesKeys, this.displayedCategories)
-            $wire.dispatchSelf('userInput', {"contents": this.contents, "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys});
+            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " "), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys});
             
         },
 

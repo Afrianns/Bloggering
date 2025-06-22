@@ -26,7 +26,7 @@ Route::middleware("guest")->group(function() {
 
 Route::middleware("auth")->group(function () {
 
-    Route::post("/logout", [Login::class, 'logoutPost'])->name("logout");
+    Route::post("/logout", [UserManager::class, 'logoutPost'])->name("logout");
     
     Route::get('/dashboard', Home::class);
     Route::get('/dashboard/detail/{uuid}', Detail::class);

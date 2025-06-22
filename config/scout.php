@@ -206,4 +206,8 @@ return [
         ],
     ],
 
+    'queue' => [
+        'connection' => 'database',
+        'queue' => 'scout'
+    ],
 ];
