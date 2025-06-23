@@ -16,7 +16,20 @@ class Comment extends Component
 
     public function replying($commentID, $postId){
 
-        dd($this->reply, $commentID, $postId);
+        $this->validate([
+            "reply.$commentID" => "required|min:5",
+        ],[
+            "reply.$commentID.required" => "The reply field is required.",
+            "reply.$commentID.min" => "The reply field must be at least 5 characters."
+        ]);
+        
+        $result = ModelsComment::create(["comment"=> $this->reply[$commentID], "user_id" => Auth::user()->id,"comment_id" => $commentID, "post_id" => $postId]);
+
+        if($result){
+            $this->dispatch("success");
+            return redirect("/dashboard/detail/$postId");
+        }
+        // dd($this->reply[$commentID], $commentID, $postId, $validated);
     }
 
     // public function replying($key, $commentID, $postID, $text)
@@ -37,14 +50,10 @@ class Comment extends Component
     //     // dd($this->reply, $commentID);
     // }
 
-    public function getComment()
-    {
-        return $this->comments;   
-    }
-
     public function render()
     {
-        // dd($this->margin);
-        return view('livewire.comments.comment');
+        return view('livewire.comments.comment',[
+            "comments" => $this->comments
+        ]);
     }
 }

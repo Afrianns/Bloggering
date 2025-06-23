@@ -21,11 +21,18 @@ class Comments extends Component
             "post_id" => "required",
         ]);
 
-        Comment::create(array_merge($validated, ['user_id' => Auth::user()->id]));
+        $result = Comment::create(array_merge($validated, ['user_id' => Auth::user()->id]));
+
+        if($result){
+            $this->dispatch("success");
+            return redirect("/dashboard/detail/$this->post_id");
+        }
     }
 
     public function render()
     {
-        return view('livewire.comments.comments');
+        return view('livewire.comments.comments',[
+            "comments" => $this->comments
+        ]);
     }
 }

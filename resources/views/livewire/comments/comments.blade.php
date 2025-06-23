@@ -6,13 +6,39 @@
     @foreach ($errors->all() as $error)
         <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $error }}</p>
     @endforeach
+    
     <livewire:comments.comment :comments="$comments->comments()->get()">
     @script
     <script>
         Alpine.data("commentsFunction", () => ({
 
+            init(){
+                $wire.on("success", () => {
+                    this.popupMessage("success", "successfully posted.")
+                })
+            },
+
             loadData(data){
                 console.log(data)
+            },
+
+            popupMessage(icon, title) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                Toast.fire({
+                    icon: icon,
+                    title: title
+                });
             }
         }))
         Alpine.data("commentFunction", () => ({
@@ -20,47 +46,37 @@
             replyText: [],
             comments: [],
 
-            replyError: '',
-
             keys: {},
+
+
 
             initalData: [],
 
             init(){
-                $wire.on("error", () => {
-                    this.replyError = "reply cannot be empty";
-                    // console.log()
+                $wire.on("success", () => {
+                    this.popupMessage("success", "successfully posted.")
                 })
+
             },
 
-            // reply(key,comment_id, post_id){
-            //     $wire.replying(key, comment_id, post_id, this.replyText[key])
-            //     console.log(key, comment_id, post_id, this.replyText[key])
-            // }
+            popupMessage(icon, title) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
 
-            showReply(key) {
-                for (const key in this.keys) {
-                    this.keys[key] = false;
-                }
-                
-                this.keys[key] = true;
-
-                console.log(this.keys)
-            },
-
-            // isExist(commentID){
-            //     console.log("is here", commentID)
-            //     for (const key in this.keys) {
-            //         if(commentID == key){
-            //             return true;
-            //         } else{
-            //             return false;
-            //         }
-            //     //    console./log(key, commentID, this.keys);
-            //     }
-                
-            //     // return (key == this.key);
-            // }
+                Toast.fire({
+                    icon: icon,
+                    title: title
+                });
+            }
         }))
     </script>
     @endscript
