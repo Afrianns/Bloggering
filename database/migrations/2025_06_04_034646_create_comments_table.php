@@ -20,8 +20,8 @@ return new class extends Migration
             $table->id();
             $table->text("comment");
             $table->integer("vote_count")->default(0);
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Post::class);
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Post::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Comment::class)->nullable();
             $table->timestamps();
         });

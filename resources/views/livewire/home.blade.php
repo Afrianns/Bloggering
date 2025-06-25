@@ -1,5 +1,4 @@
 <div class="my-5">
-    {{ $articles }}
     @if (count($articles) > 0)
         @foreach ($articles as $article)
         <section class="card text-white my-5">
@@ -12,7 +11,7 @@
                 </div> 
                 <div class="flex gap-x-2 text-xs">
                     @foreach ($article->categories()->get() as $article_categories)
-                    <span class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</span>
+                        <a href="/explore?category={{ $article_categories->name }}" class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</a>
                     @endforeach
                 </div>
                 <div class="my-5 text-sm">

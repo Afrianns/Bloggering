@@ -73,6 +73,7 @@ class Comment extends Component
     }
     public function render()
     {
+        // dd($this->comments);
         return view('livewire.comments.comment',[
             "comments" => $this->comments
         ]);

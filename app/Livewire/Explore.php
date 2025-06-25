@@ -16,6 +16,7 @@ class Explore extends Component
     public $categories;
     public $search = '';
     public $categoryFilter = '';
+    public $categoryFilterHome = '';
 
     public $page = 0;
 
@@ -23,9 +24,11 @@ class Explore extends Component
 
     private $articles; 
 
-    // #[On("getCategories")]
     public function mount()
     {   
+        if(request()->category){
+            $this->categoryFilterHome = request()->category . " ";
+        }
         $this->categories = Category::all();
         
         // return $this->dispatch('categories', $this->categories);
@@ -51,8 +54,9 @@ class Explore extends Component
     public function render()
     {
         $this->articles = $this->searching();
-        return view('livewire.explore', [
 
+        // dd($this->articles->count());
+        return view('livewire.explore', [
             "articles" => $this->articles
         ]);
     }

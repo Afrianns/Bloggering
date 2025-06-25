@@ -16,8 +16,11 @@ class Detail extends Component
 
     public function mount(string $uuid)
     {   
+
         $this->article = Post::where("id", $uuid)->first();
 
+        // dd($this->article);
+    
         if(!$this->article){
             return redirect('dashboard');
         }

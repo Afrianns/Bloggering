@@ -35,7 +35,7 @@ Route::middleware("auth")->group(function () {
 
     Route::get('/dashboard/detail/edit/{uuid}', EditArticle::class);
     Route::get('/article/add', AddNewArticle::class);
-    Route::get('/explore', Explore::class);
+    Route::get('/explore/{category?}', Explore::class);
 
     // Profile Section
     Route::get('/profile/{uuid}', Profile::class);

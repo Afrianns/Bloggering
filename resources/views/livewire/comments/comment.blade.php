@@ -1,6 +1,6 @@
 <div @class(['ml-5' => $margin]) x-data="commentFunction">
     @foreach ($comments as $key => $comment)
-        <div class="my-5" wire:key="item-{{ $comment->id }}">
+        <div class="my-5">
             <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
                 <section class="basis-[5%]">
                     @php
@@ -35,7 +35,6 @@
             <form action=""class="flex items-start gap-x-3 mt-2" wire:submit="replying({{ $comment->id }}, '{{ $comment->post_id }}')">
                 <input name="reply" id="reply" wire:model="reply.{{ $comment->id }}" class="basis-[90%] border border-gray-200 rounded-sm p-2"></textarea>
                 
-                {{-- <span class="bg-amber-500 button opacity-50 cursor-progress basis-[10%]" wire:loading>loading...</span> --}}
                 <Button type="submit" class="button basis-[10%] bg-amber-500">reply</Button>
             </form>
            <div class="mt-3">

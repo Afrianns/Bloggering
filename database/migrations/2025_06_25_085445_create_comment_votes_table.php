@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('comment_votes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Comment::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Comment::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->boolean("is_up_vote");
             $table->timestamps();
         });

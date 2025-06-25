@@ -1,5 +1,5 @@
 
-<div class=" text-gray-100" x-data="exploreFunction" x-on:categories="showCate($event.detail)">
+<div class=" text-gray-100" x-data="exploreFunction">
     <h1 class="text-2xl my-5 font-bold text-gray-400 text-center">Explore</h1>
     <div class="flex flex-col mx-auto"> 
         <form action="" wire:submit="searching">
@@ -11,16 +11,16 @@
             </div>
         </form>
     </div>
+    <p class="text-gray-400 text-sm mt-5 text-center">Search by Categories</p>
+    <div class="flex gap-x-2 text-xs justify-center m-3 mb-10">
+        @foreach ($categories as $category)
+            <span class="cate-btn hover:opacity-60 cursor-pointer"
+            :class="checkIfSame('{{$category->name}}') ? 'bg-[#2d2b2b]' : ''" 
+            x-on:click="selectCategory('{{ $category->name }}')"
+            >{{ $category->name }}</span>
+        @endforeach
+    </div>
     @if (count($articles) > 0)
-        <p class="text-gray-400 text-sm mt-5 text-center">Search by Categories</p>
-        <div class="flex gap-x-2 text-xs justify-center m-3 mb-10">
-            @foreach ($categories as $category)
-                <span class="cate-btn hover:opacity-60 cursor-pointer"
-                :class="checkIfSame('{{$category->name}}') ? 'bg-[#2d2b2b]' : ''" 
-                x-on:click="selectCategory('{{ $category->name }}')"
-                >{{ $category->name }}</span>
-            @endforeach
-        </div>
         @foreach ($articles as $article)
             <section class="card text-white my-5">
                 <div class="flex justify-between items-center my-5">
@@ -64,16 +64,10 @@
 
             selectedCategories: [],
 
-            getCategories(categories){
-                // categories.forEach(category => {
-                //     this.categories.push({
-                //         name: category.name,
-                //         class: ''
-                //     })
-                // });
-
-                return categories;
-                // console.log(categories)
+            init(){
+                if($wire.categoryFilterHome){
+                    this.selectCategory($wire.categoryFilterHome.trim());
+                }
             },
 
             checkIfSame(category){
@@ -114,10 +108,6 @@
                 } else{
                     return true;
                 }
-            },
-
-            showCate(data){
-                console.log(data)
             }
         }))
 

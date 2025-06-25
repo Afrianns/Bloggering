@@ -17,7 +17,6 @@ class Post extends Model
         'user_id',
     ];
 
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -39,7 +38,6 @@ class Post extends Model
 
         ];
     }
-
 
     public function comments()
     {
