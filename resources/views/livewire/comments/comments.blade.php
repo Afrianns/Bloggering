@@ -48,7 +48,7 @@
 
             keys: {},
 
-
+            voteCount: 0,
 
             initalData: [],
 
@@ -58,6 +58,18 @@
                 })
 
             },
+            
+            loadVoteCount(){
+
+            },
+
+            // upVote(id){
+            //     $wire.upVote(id);
+            // },
+
+            // downVote(id){
+            //     $wire.downVote(id);
+            // },
 
             popupMessage(icon, title) {
                 const Toast = Swal.mixin({
@@ -76,7 +88,7 @@
                     icon: icon,
                     title: title
                 });
-            }
+            },
         }))
     </script>
     @endscript

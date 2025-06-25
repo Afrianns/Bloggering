@@ -46,4 +46,14 @@ class Post extends Model
         return $this->hasMany(Comment::class)->whereNull("comment_id")->latest();
     }
 
+    public function votes()
+    {
+        return $this->hasOne(vote::class);
+    }
+
+    public function isUserVote(string $user_id)
+    {
+        return $this->hasOne(vote::class)->where("user_id", $user_id)->count();
+    }
+
 }

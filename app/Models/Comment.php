@@ -27,4 +27,14 @@ class Comment extends Model
     public function replies() {
         return $this->hasMany(Comment::class);
     }
+    
+    public function votesCount(string $commentID){
+        $upVoteCount = $this->votes()->where("comment_id", $commentID)->where("is_up_vote", true)->count();
+        $downVoteCount = $this->votes()->where("comment_id", $commentID)->where("is_up_vote", false)->count();
+        return $upVoteCount - $downVoteCount;
+    }
+
+    public function votes(){
+        return $this->hasMany(Comment_vote::class);
+    }
 }

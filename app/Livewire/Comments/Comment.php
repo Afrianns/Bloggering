@@ -3,8 +3,9 @@
 namespace App\Livewire\Comments;
 
 use App\Models\Comment as ModelsComment;
+use App\Models\Comment_vote;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class Comment extends Component
@@ -32,24 +33,44 @@ class Comment extends Component
         // dd($this->reply[$commentID], $commentID, $postId, $validated);
     }
 
-    // public function replying($key, $commentID, $postID, $text)
-    // {
+   
+    public function VoteUporDown(string $commentID, bool $vote) 
+    {
 
-    //     if(trim($text) == "" || !$text){
-    //         $this->dispatch("error");
-    //     }
+        // Auth::user()->doVote($commentID, $vote);
+        $res = $this->commentVote()->where("comment_id", $commentID)->first();
 
+        if($res == null){
+            Comment_vote::create([
+                "user_id" => Auth::user()->id,
+                "comment_id" => $commentID,
+                "is_up_vote" => $vote
+            ]);
+        } else{
+            if($res->is_up_vote == $vote){
+                $res->delete();
+            } else{
+                Comment_vote::where("user_id", Auth::user()->id)->update([
+                    "is_up_vote" => $vote
+                ]);
+            }
+        }
+    }
 
-    //     // dd($key, $commentID, $postID, $text);
+    public function commentVote()
+    {
+        return Comment_vote::where("user_id", Auth::user()->id);
+    }
 
-    //     $validated = $this->validate([
-    //         "reply" => "required|min:5",
-    //     ]);
+    public function downVote(string $id) {
+        $comment = ModelsComment::where("id", $id);
 
-    //     // ModelsComment::create(["comment"=> $this->reply,"user_id" => Auth::user()->id,"comment_id" => $commentID, "post_id" => $postID]);
-    //     // dd($this->reply, $commentID);
-    // }
-
+        $currentVoteCount = $comment->first()->vote_count -= 1;
+        
+        $res = $comment->update([
+            "vote_count" => $currentVoteCount
+        ]);
+    }
     public function render()
     {
         return view('livewire.comments.comment',[

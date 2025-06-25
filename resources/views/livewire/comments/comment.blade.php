@@ -1,12 +1,20 @@
-<div class="ml-{{ $margin }}" x-data="commentFunction" >
+<div @class(['ml-5' => $margin]) x-data="commentFunction">
     @foreach ($comments as $key => $comment)
-
         <div class="my-5" wire:key="item-{{ $comment->id }}">
             <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
                 <section class="basis-[5%]">
-                    <div class="flex gap-y-2 w-5 flex-col items-center">
-                        <span class="p-1 bg-gray-700 border-gray-900 hover:bg-gray-800 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M4   14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.   475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14"/></svg></span>
-                        <span class="p-1 bg-gray-700 border-gray-900 hover:bg-gray-800 rotate-180 cursor-pointer"><svg  xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" ><path d="M4   14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10c-.381-.475-1.181-.   475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14"/></svg></span>
+                    @php
+                       $votedUp = Auth::user()->isVoted($comment->id, true); 
+                       $votedDown = Auth::user()->isVoted($comment->id, false); 
+                    @endphp
+                    <div class="flex gap-y-1 w-5 flex-col items-center">
+                        <span  @class(["p-1 border-gray-900 cursor-pointer","bg-red-500" => $votedUp == 1, "bg-gray-700" => $votedUp == 0]) wire:click="VoteUporDown({{ $comment->id }}, true)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19"/></svg>
+                        </span>
+                        <p>{{ $comment->votesCount($comment->id) }}</p>
+                        <span  @class(["p-1 border-gray-900 cursor-pointer rotate-180","bg-red-500" => $votedDown == 1, "bg-gray-700" => $votedDown == 0]) wire:click="VoteUporDown({{ $comment->id }}, false)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19"/></svg>
+                        </span>
                     </div>
                 </section>
                 <section class="basis-[95%]">
@@ -35,7 +43,7 @@
                <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $message }}</p>
                @enderror
             </div> 
-            <livewire:comments.comment :comments="$comment->replies()->get()" :margin="5" >
+            <livewire:comments.comment :comments="$comment->replies()->get()" :margin="true" >
         </div>
     @endforeach
 </div>

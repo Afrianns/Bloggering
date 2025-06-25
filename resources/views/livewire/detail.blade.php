@@ -16,14 +16,26 @@
             {!! $article->content !!}
         </div>
         <p class="text-gray-400 text-sm">{{ Carbon\Carbon::parse($article->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh") }}</p>
-        <div class="flex justify-between mt-5">
-            <a href="/dashboard" wire:navigate class="text-orange-600 hover:underline">Back</a>
+        <div class="mt-5 flex justify-between">
+            <div class="flex justify-between mt-5">
+                <a href="/dashboard" wire:navigate class="text-orange-600 hover:underline">Back</a>
+            </div>
+            <div class="flex gap-x-2">
+                @php
+                    $userVote = $article->isUserVote(Auth::user()->id);
+                @endphp
+                <div class="card w-fit flex gap-x-2 items-center hover:cursor-pointer" wire:click="upVote('{{ Auth::user()->id }}', '{{ $article->id }}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><path 
+                        @class(["fill-red-500" => $userVote == 1, "fill-white" => $userVote == 0]) stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 24L24 6l19 18H31v18H17V24z"/></svg>
+                    <p class="text-gray-400">{{ $article->votes()->count() }}</p>
+                </div>
             @if ($article->user_id == Auth::user()->id)
                 <div class="card flex gap-x-5">
                     <a href="/dashboard/detail/edit/{{ $article->id }}" class="text-[#b7fb2f] hover:underline">Edit</a>
                     <span class="text-[#ff2828]  cursor-pointer hover:underline" x-on:click="deleteArticle('{{$article->id}}')">Delete</span>
                 </div>
-            @endif
+                @endif
+            </div>
         </div>
     </section>
     <h3 class="text-gray-100">All Comments</h3>

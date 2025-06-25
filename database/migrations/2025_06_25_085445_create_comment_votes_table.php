@@ -1,9 +1,6 @@
 <?php
 
-// use App\Models\User;
-
 use App\Models\Comment;
-use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,13 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('comment_votes', function (Blueprint $table) {
             $table->id();
-            $table->text("comment");
-            $table->integer("vote_count")->default(0);
+            $table->foreignIdFor(Comment::class);
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Post::class);
-            $table->foreignIdFor(Comment::class)->nullable();
+            $table->boolean("is_up_vote");
             $table->timestamps();
         });
     }
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('comment_votes');
     }
 };

@@ -1,17 +1,17 @@
 
-@if (count($articles) > 0)
-    <div class=" text-gray-100" x-data="exploreFunction" x-on:categories="showCate($event.detail)">
+<div class=" text-gray-100" x-data="exploreFunction" x-on:categories="showCate($event.detail)">
     <h1 class="text-2xl my-5 font-bold text-gray-400 text-center">Explore</h1>
-        <div class="flex flex-col mx-auto"> 
-            <form action="" wire:submit="searching">
-                <input type="text" wire:model="search" class="border p-1 px-2 w-2/3 mx-auto border-gray-100 block h-12 py-1 rounded"name="title" id="title">
-                <div class="w-[100px] mx-auto">
-                    <button class="button bg-amber-600 mt-5">
-                        search
-                    </button>
-                </div>
-            </form>
-        </div>
+    <div class="flex flex-col mx-auto"> 
+        <form action="" wire:submit="searching">
+            <input type="text" wire:model="search" class="border p-1 px-2 w-2/3 mx-auto border-gray-100 block h-12 py-1 rounded"name="title" id="title">
+            <div class="w-[100px] mx-auto">
+                <button class="button bg-amber-600 mt-5">
+                    search
+                </button>
+            </div>
+        </form>
+    </div>
+    @if (count($articles) > 0)
         <p class="text-gray-400 text-sm mt-5 text-center">Search by Categories</p>
         <div class="flex gap-x-2 text-xs justify-center m-3 mb-10">
             @foreach ($categories as $category)
@@ -50,80 +50,77 @@
         <div class="w-full mx-auto text-center mb-5">
             {{ $articles->links() }}
         </div>
+    @else
+        <div class="text-center text-gray-200 my-5">
+            <p>No Articles Found</p>
+        </div>
+    @endif
 
-        @script
-        <script>
-            Alpine.data("exploreFunction", () => ({
+    @script
+    <script>
+        Alpine.data("exploreFunction", () => ({
 
-                categoryFilter: '',
+            categoryFilter: '',
 
-                selectedCategories: [],
-                init(){
-                    console.log("pas")
-                },
+            selectedCategories: [],
 
-                getCategories(categories){
-                    // categories.forEach(category => {
-                    //     this.categories.push({
-                    //         name: category.name,
-                    //         class: ''
-                    //     })
-                    // });
+            getCategories(categories){
+                // categories.forEach(category => {
+                //     this.categories.push({
+                //         name: category.name,
+                //         class: ''
+                //     })
+                // });
 
-                    return categories;
-                    // console.log(categories)
-                },
+                return categories;
+                // console.log(categories)
+            },
 
-                checkIfSame(category){
-                    exist = false;
-                    console.log(this.selectedCategories)
-                    if(this.selectedCategories.length > 0){
-                        this.selectedCategories.forEach(select => {
-                            if(select == category){
-                                exist = true;
-                            }
-                        });
-                    }
-                    return exist
-                },
-
-
-                selectCategory(category){
-                    
-                    let index = this.selectedCategories.indexOf(category);
-                    if(index == -1){
-                        $wire.filterByCategory(category)
-                        this.selectedCategories.push(category)
-                    } else{
-                        $wire.filterByCategory("", index)
-                        this.selectedCategories.splice(index, 1)
-                    }
-                    console.log(this.selectedCategories)
-                },
-
-                checkCategory(categories){
-                    if(this.categoryFilter != ''){
-                        for (const category of JSON.parse(categories)) {
-                            if(category.name == this.categoryFilter){
-                                return true;
-                            } 
+            checkIfSame(category){
+                exist = false;
+                console.log(this.selectedCategories)
+                if(this.selectedCategories.length > 0){
+                    this.selectedCategories.forEach(select => {
+                        if(select == category){
+                            exist = true;
                         }
-                        return false;
-                    } else{
-                        return true;
-                    }
-                },
-
-                showCate(data){
-                    console.log(data)
+                    });
                 }
-            }))
+                return exist
+            },
 
-        </script>
-        @endscript
-    </div>
-@else
-    <div class="text-center text-gray-200 my-5">
-        <p>No Articles Found</p>
-    </div>
-@endif
+
+            selectCategory(category){
+                
+                let index = this.selectedCategories.indexOf(category);
+                if(index == -1){
+                    $wire.filterByCategory(category)
+                    this.selectedCategories.push(category)
+                } else{
+                    $wire.filterByCategory("", index)
+                    this.selectedCategories.splice(index, 1)
+                }
+                console.log(this.selectedCategories)
+            },
+
+            checkCategory(categories){
+                if(this.categoryFilter != ''){
+                    for (const category of JSON.parse(categories)) {
+                        if(category.name == this.categoryFilter){
+                            return true;
+                        } 
+                    }
+                    return false;
+                } else{
+                    return true;
+                }
+            },
+
+            showCate(data){
+                console.log(data)
+            }
+        }))
+
+    </script>
+    @endscript
+</div>

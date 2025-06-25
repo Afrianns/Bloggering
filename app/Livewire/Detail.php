@@ -4,11 +4,16 @@ namespace App\Livewire;
 
 use App\Models\Category_post;
 use App\Models\Post;
+use App\Models\vote;
+use Dotenv\Util\Str;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Session;
 use Livewire\Component;
 
 class Detail extends Component
 {
     private $article;
+
     public function mount(string $uuid)
     {   
         $this->article = Post::where("id", $uuid)->first();
@@ -42,6 +47,28 @@ class Detail extends Component
         session()->flash('status-success',"failed to delete your article");
         return $this->redirect("/dashboard");
         // return $this->dispatch('status-message', "error", "failed to delete your article");
+    }
+
+    public function upVote(string $userID, string $articleID){
+        
+        $res = $this->getArticle($articleID)->votes()->where("user_id", $userID)->first();
+
+        if($res == null){
+            vote::create([
+                "user_id" => Auth::user()->id,
+                "post_id" => $articleID
+            ]);
+        } else{
+            vote::where("post_id", $articleID)->delete();
+        }
+
+        $this->article = $this->getArticle($articleID);
+
+    }
+
+    private function getArticle(string $articleID)
+    {
+        return Post::where("id", $articleID)->first();
     }
 
     public function render()

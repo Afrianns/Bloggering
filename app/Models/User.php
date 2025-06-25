@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+    
+
+    public function isVoted(string $commentID, bool $vote){
+        return $this->hasMany(Comment_vote::class)->where("comment_id", $commentID)->where("is_up_vote", $vote)->count();
+    }
 }
