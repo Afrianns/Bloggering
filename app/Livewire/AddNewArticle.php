@@ -41,7 +41,6 @@ class AddNewArticle extends Component
             $this->getCategories();
             
             $categoriesStructured = [];
-            // dump($this->categories);
 
             foreach ($this->availCategoriesKeys as $selectedKey => $selectedValue) {
                 array_push($categoriesStructured, ['post_id' => $po->id, 'category_id' => $selectedValue]);
@@ -59,13 +58,18 @@ class AddNewArticle extends Component
                 }
             };
 
-            $cpo = Category_post::upsert($categoriesStructured, ['category_id']);
+
+            foreach ($categoriesStructured as $categoryStructured) {
+                Category_post::updateOrCreate(["post_id" => $categoryStructured['post_id'], "category_id" => $categoryStructured['category_id']], ["category_id" => $categoryStructured['category_id']]);
+            }
             
             $this->title = '';
             $this->categories = [];
             $this->contents = '';
+
+            $this->availCategories = [];
+            
             return $this->dispatch('status-message', "success", "your article successfully published");
-            // dd($this->title, $this->categories, $this->contents, $po, $ca, $cpo, $categoriesStructured);
         } else{
             return $this->dispatch('status-message', "error", "failed to publish your article!");
         }

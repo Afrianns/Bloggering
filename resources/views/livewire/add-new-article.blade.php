@@ -44,6 +44,9 @@
             </div>
         </form>
     </div>
+    @php
+       var_dump($availCategories); 
+    @endphp
 </div>
 @script
 <script>
@@ -70,11 +73,17 @@
                 this.displayedCategories = []
                 this.selectedCategoriesKeys = []
                 this.selectedCategories = []
+
+                this.availCategoriesValues = []
+                this.availCategoriesKeys = []
+                console.log(JSON.parse(JSON.stringify($wire.availCategories)))
+                this.getAllCategories()
+
             })
-            JSON.parse(JSON.stringify($wire.availCategories)).forEach(element => {
-                this.availCategoriesValues.push(Object.values(element)[0])
-                this.availCategoriesKeys.push(Object.keys(element)[0])
-            });
+
+            console.log(JSON.parse(JSON.stringify($wire.availCategories)))
+
+            this.getAllCategories();
             
             let quill = new Quill('#editor', {
                 theme: 'snow'
@@ -83,9 +92,17 @@
                 this.contents = quill.getSemanticHTML()
             })
         },
+
+        getAllCategories() {
+            JSON.parse(JSON.stringify($wire.availCategories)).forEach(element => {
+                this.availCategoriesValues.push(Object.values(element)[0])
+                this.availCategoriesKeys.push(Object.keys(element)[0])
+            });
+        },
+
         dispatchInputedData(){
             // console.log(this.selectedCategories, this.selectedCategoriesKeys, this.displayedCategories)
-            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " "), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys});
+            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys});
             
         },
 

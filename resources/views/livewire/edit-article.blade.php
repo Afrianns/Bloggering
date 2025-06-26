@@ -75,18 +75,19 @@
                 theme: 'snow'
             });
 
+
             quill.setContents(quill.clipboard.convert({
                 html: "{!! $article->content !!}"
             }));
 
             this.contents = "{!! $article->content !!}"
-
+            
             quill.on("text-change", (delta,oldDelta, source) => {
                 this.contents = quill.root.innerHTML
             })
         },
         dispatchInputedData(){
-            $wire.dispatchSelf('userInput', {"contents": this.contents, "categories": this.displayedCategories});
+            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.displayedCategories});
             
         },
 
@@ -143,8 +144,7 @@
                 icon: icon,
                 title: title
             });
-        },
-
+        }
 
     }))
 </script>

@@ -16,6 +16,9 @@
                 $wire.on("success", () => {
                     this.popupMessage("success", "successfully posted.")
                 })
+                $wire.on("success-update", () => {
+                    this.popupMessage("success", "successfully updated.")
+                })
             },
 
             loadData(data){
@@ -40,55 +43,6 @@
                     title: title
                 });
             }
-        }))
-        Alpine.data("commentFunction", () => ({
-            
-            replyText: [],
-            comments: [],
-
-            keys: {},
-
-            voteCount: 0,
-
-            initalData: [],
-
-            init(){
-                $wire.on("success", () => {
-                    this.popupMessage("success", "successfully posted.")
-                })
-
-            },
-            
-            loadVoteCount(){
-
-            },
-
-            // upVote(id){
-            //     $wire.upVote(id);
-            // },
-
-            // downVote(id){
-            //     $wire.downVote(id);
-            // },
-
-            popupMessage(icon, title) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
-
-                Toast.fire({
-                    icon: icon,
-                    title: title
-                });
-            },
         }))
     </script>
     @endscript

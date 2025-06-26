@@ -24,7 +24,9 @@ return new class extends Migration
             $table->foreignIdFor(Post::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Comment::class)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
+        
     }
 
     /**

@@ -5,7 +5,10 @@ namespace App\Livewire\Comments;
 use App\Models\Comment as ModelsComment;
 use App\Models\Comment_vote;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+
 use Livewire\Component;
 
 class Comment extends Component
@@ -14,6 +17,8 @@ class Comment extends Component
     public $comments;
 
     public $reply = [];
+
+    public $editedComment = [];
 
     public function replying($commentID, $postId){
 
@@ -62,17 +67,52 @@ class Comment extends Component
         return Comment_vote::where("user_id", Auth::user()->id);
     }
 
-    public function downVote(string $id) {
-        $comment = ModelsComment::where("id", $id);
+    // public function downVote(string $id) {
+    //     $comment = ModelsComment::where("id", $id);
 
-        $currentVoteCount = $comment->first()->vote_count -= 1;
+    //     $currentVoteCount = $comment->first()->vote_count -= 1;
         
-        $res = $comment->update([
-            "vote_count" => $currentVoteCount
-        ]);
+    //     $res = $comment->update([
+    //         "vote_count" => $currentVoteCount
+    //     ]);
+    // }
+
+    public function deleteComment(string $commentId)
+    {
+        $res = ModelsComment::where("id", $commentId)->delete();
+        dd($commentId, $res);
     }
+
+    public function editComment(string $id, string $postID, string $comment)
+    {
+
+        $newEditedComment = '';
+
+        foreach ($this->editedComment as $value) {
+            
+            if($value[$id]){
+                $newEditedComment = $value[$id];
+                break;
+            }
+        }
+
+        if($newEditedComment == $comment) return;
+
+        $result = ModelsComment::where("id", $id)->update([
+            "comment" => $newEditedComment
+        ]);
+
+        if($result){
+            $this->dispatch("success-update");
+            return redirect("/dashboard/detail/$postID");
+        }
+    }
+
     public function render()
     {
+        foreach ($this->comments as $comment) {
+            array_push($this->editedComment, [ $comment->id => $comment->comment ]);
+        }
         // dd($this->comments);
         return view('livewire.comments.comment',[
             "comments" => $this->comments

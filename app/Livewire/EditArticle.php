@@ -64,6 +64,7 @@ class EditArticle extends Component
         $ca = Category::upsert($this->categories, ['name']);
 
         if($ca == count($this->categories)){
+        
             $this->getCategories();
             
             $categoriesStructured = [];
@@ -85,8 +86,13 @@ class EditArticle extends Component
             };
             $this->getCategoriesPivotTable();
 
-            Category_post::upsert($categoriesStructured, ['category_id']);
+            // Category_post::upsert($categoriesStructured, ['post_id', 'category_id']);
+
             
+            foreach ($categoriesStructured as $categoryStructured) {
+                Category_post::updateOrCreate(["post_id" => $categoryStructured['post_id'], "category_id" => $categoryStructured['category_id']], ["category_id" => $categoryStructured['category_id']]);
+            }
+
             $this->categories = [];
             $this->contents = '';
             return $this->dispatch('status-message', "success", "your article successfully published");

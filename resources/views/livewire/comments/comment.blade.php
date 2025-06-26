@@ -1,6 +1,14 @@
 <div @class(['ml-5' => $margin]) x-data="commentFunction">
     @foreach ($comments as $key => $comment)
-        <div class="my-5">
+        <div class="my-5" wire:key="{{ $key }}">
+           @if ($comment->trashed())
+            <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
+                <p class="text-gray-600">Deleted Comment</p>
+            </div>
+           @else
+           <div class="flex ml-auto mb-2">
+                <span class="text-[#ff2828] cursor-pointer hover:underline ml-auto" x-on:click="deleteComment('{{$comment->id}}')">Delete</span>
+            </div>
             <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
                 <section class="basis-[5%]">
                     @php
@@ -23,11 +31,29 @@
                             <h3>{{ $comment->user->name }}</h3>
                             <span class="text-gray-400 text-xs">{{ $comment->user->email }}</span>
                         </section>
-                        <p class="text-gray-400 text-sm">{{ Carbon\Carbon::parse($comment->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh") }}</p>
+                        @php
+                            $createdAt = Carbon\Carbon::parse($comment->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh");
+                            $updatedAt = Carbon\Carbon::parse($comment->updated_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh");
+                        @endphp
+                        <div class="flex text-xs items-center gap-x-2">
+                            @if ($createdAt != $updatedAt)
+                                <span class="text-gray-400">(Edited)</span>
+                            @endif
+                            <p class="text-gray-200 text-sm">{{ $createdAt }}</p>
+                        </div>
                     </div>
 
-                    <div class="my-2">
-                        {{ $comment->comment }}
+                    <div class="flex justify-between items-start">
+                        <div class="my-2" x-show="!ListIsEdit['{{ $comment->id }}']">
+                            {{ $comment->comment }}
+                        </div>
+                        @if ($comment->user->id === Auth::user()->id)
+                            <form wire:submit="editComment({{$comment->id}}, '{{ $comment->post_id }}', {{ $comment->comment }})" method="post" class="w-full flex justify-between items-start" x-show="ListIsEdit['{{ $comment->id }}']">
+                                <input type="text" name="comment" wire:model="editedComment.{{ $key }}.{{ $comment->id }}" id="comment" class="basis-[90%] border border-gray-200 rounded-sm p-2"></input>
+                                <button class="text-green-500 hover:underline cursor-pointer" x-on:click="editComment('{{ $comment->comment }}', {{ $comment->id }}, false)">Done</button>
+                            </form>
+                            <p class="text-green-500 hover:underline cursor-pointer" x-show="!ListIsEdit['{{ $comment->id }}']" x-on:click="editComment('{{ $comment->comment }}', {{ $comment->id }}, true)">Edit</p>
+                        @endif
                     </div>
                 </section>
             </div>
@@ -41,8 +67,73 @@
                @error("reply.$comment->id")
                <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $message }}</p>
                @enderror
-            </div> 
+            </div>
+           @endif 
             <livewire:comments.comment :comments="$comment->replies()->get()" :margin="true" >
         </div>
     @endforeach
+    @script
+    <script>
+        Alpine.data("commentFunction", () => ({
+            
+            replyText: [],
+            comments: [],
+
+            keys: {},
+
+            voteCount: 0,
+
+            initalData: [],
+
+            ListIsEdit: {},
+            
+            editComment(comment, idx, value){
+                this.ListIsEdit[idx] = value;
+            },
+
+            deleteComment(commentID){
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                    });
+                    swalWithBootstrapButtons.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "No, cancel!",
+                        reverseButtons: true
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        console.log(commentID);
+                        $wire.deleteComment(commentID);
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                    }
+                });
+            },
+
+            popupMessage(icon, title) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                Toast.fire({
+                    icon: icon,
+                    title: title
+                });
+            },
+        }))
+    </script>
+    @endscript
 </div>

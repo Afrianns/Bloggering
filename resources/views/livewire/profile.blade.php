@@ -31,6 +31,10 @@
             <a href="/profile/edit/{{ $user->id }}" class="hover:underline text-orange-500 text-sm">Edit</a>
         @endif
     </div>
+    <div class="flex justify-center gap-x-3 items-center my-5 text-sm">
+        <a href="#" class="hover:underline">My Articles</a>
+        <a href="#" class="hover:underline">Votes</a>
+    </div>
     @if (count($articles) > 0)
         
         <div class="flex justify-between items-center mt-5">

@@ -9,7 +9,7 @@
         </div> 
         <div class="flex gap-x-2 text-xs justify-center">
             @foreach ($article->categories()->get() as $article_categories)
-            <span class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</span>
+            <a href="/explore?category={{ $article_categories->name }}" class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</a>
             @endforeach
         </div>
         <div class="my-5 text-sm text-gray-300 leading-6">
