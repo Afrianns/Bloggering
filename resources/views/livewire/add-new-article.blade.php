@@ -38,15 +38,12 @@
                 <div>@error('contents') <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $message }}</p> @enderror</div>
             </section>
             <div class="flex items-center justify-between gap-x-3">
-                <span class="bg-orange-500 button opacity-50 cursor-progress" wire:loading>loading...</span>
+                <span class="border border-gray-600 border-dashed button opacity-50 cursor-progress" wire:loading>loading...</span>
                 <Button type="submit" class="bg-orange-500 button" @click="dispatchInputedData()" wire:loading.remove>Publish</Button>
-                <Button class="bg-gray-500 button">Draft</Button>
+                <Button class="bg-gray-600 button" @click="dispatchInputedDataDraft()" wire:loading.remove>Draft</Button>
             </div>
         </form>
     </div>
-    @php
-       var_dump($availCategories); 
-    @endphp
 </div>
 @script
 <script>
@@ -69,7 +66,7 @@
             $wire.on("status-message", (message) => {
                 this.popupMessage(message[0], message[1])
 
-                quill.setContents('');
+                quill.setContents('')
                 this.displayedCategories = []
                 this.selectedCategoriesKeys = []
                 this.selectedCategories = []
@@ -103,7 +100,10 @@
         dispatchInputedData(){
             // console.log(this.selectedCategories, this.selectedCategoriesKeys, this.displayedCategories)
             $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys});
-            
+        },
+        
+        dispatchInputedDataDraft(){
+            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys}, "draft");
         },
 
         get filteredAvailCategories() {

@@ -32,48 +32,51 @@
         @endif
     </div>
     <div class="flex justify-center gap-x-3 items-center my-5 text-sm">
-        <a href="#" class="hover:underline">My Articles</a>
-        <a href="#" class="hover:underline">Votes</a>
+        <span @click="changeSection('publish')" class="hover:underline cursor-pointer" :class="{ 'underline': showPublished }">Published articles</span>
+        <span @click="changeSection('unpublished')" class="hover:underline cursor-pointer" :class="{ 'underline': !showPublished }">Unpublished articles</span>
     </div>
-    @if (count($articles) > 0)
-        
-        <div class="flex justify-between items-center mt-5">
-            <h3 >All Articles</h3>
-
-            <form action="" wire:submit="searchArticles" class="flex items-center gap-x-2 text-white">
-                <input type="text" wire:model="search" class="border p-1 px-2 border-gray-100 block rounded"name="title" id="title">
-                <div class="w-[100px] mx-auto">
-                    <button class="button bg-amber-600">
-                        search
-                    </button>
-                </div>
-            </form>
-        </div>
-        @foreach ($articles as $article)
-            <section class="card text-white my-5">
-                <div class="flex justify-between items-center my-5">
-                    <div>
-                        <h1>{{ $article->title }}</h1>
-                        <span class="text-gray-400">{{ $article->subtitle }}</span>
+    <div class="flex justify-between items-center mt-5">
+        <h3 >All Articles</h3>
+        <form action="" wire:submit="searchArticles" class="flex items-center gap-x-2 text-white">
+            <input type="text" wire:model="search" class="border p-1 px-2 border-gray-100 block rounded"name="title" id="title">
+            <div class="w-[100px] mx-auto">
+                <button class="button bg-amber-600">
+                    search
+                </button>
+            </div>
+        </form>
+    </div>
+    @if ($articles->count() > 0)
+        <template x-if="{{ $type }} != type">
+            <p class="text-center my-5">loading...</p>
+        </template>
+        <template x-if="{{ $type }} == type"">
+            @foreach ($articles as $article)
+                <section class="card text-white my-5">
+                    <div class="flex justify-between items-center my-5">
+                        <div>
+                            <h1>{{ $article->title }}</h1>
+                            <span class="text-gray-400">{{ $article->subtitle }}</span>
+                        </div>
+                        <p class="text-gray-300 text-sm">{{ Carbon\Carbon::parse($article->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh") }}</p>
+                    </div> 
+                    <div class="flex gap-x-2 text-xs">
+                        @foreach ($article->categories()->get() as $article_categories)
+                        <span class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</span>
+                        @endforeach
                     </div>
-                    <p class="text-gray-300 text-sm">{{ Carbon\Carbon::parse($article->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh") }}</p>
-                </div> 
-                <div class="flex gap-x-2 text-xs">
-                    @foreach ($article->categories()->get() as $article_categories)
-                    <span class="bg-[#2d2b2b] py-1 px-4 rounded border border-[#272727]">{{ $article_categories->name }}</span>
-                    @endforeach
-                </div>
-                <div class="my-5 text-sm">
-                    {!! Str::limit($article->content, 400); !!}
-                </div>
-                <div class="flex justify-between mt-5">
-                    <a href="/dashboard/detail/{{ $article->id }}" wire:navigate class="text-orange-600 hover:underline">Detail</a>
-                    @if ($article->user_id == Auth::user()->id)
-                        <a href="/dashboard/detail/edit/{{ $article->id }}" class="text-[#b7fb2f] hover:underline">Edit</a>
-                    @endif
-                </div>
-            </section>
-        @endforeach
+                    <div class="my-5 text-sm">
+                        {!! Str::limit($article->content, 400); !!}
+                    </div>
+                    <div class="flex justify-between mt-5">
+                        <a href="/dashboard/detail/{{ $article->id }}" wire:navigate class="text-orange-600 hover:underline">Detail</a>
+                        @if ($article->user_id == Auth::user()->id)
+                            <a href="/dashboard/detail/edit/{{ $article->id }}" class="text-[#b7fb2f] hover:underline">Edit</a>
+                        @endif
+                    </div>
+                </section>
+            @endforeach
+        </template>
         {{ $articles->links() }}
     @else
         <div class="text-center text-gray-200 my-5 text-sm">
@@ -91,6 +94,21 @@
                 "Instagram":`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M7.465 1.066C8.638 1.012 9.012 1 12 1s3.362.013 4.534.066s1.972.24 2.672.511c.733.277 1.398.71 1.948 1.27c.56.549.992 1.213 1.268 1.947c.272.7.458 1.5.512 2.67C22.988 8.639 23 9.013 23 12s-.013 3.362-.066 4.535c-.053 1.17-.24 1.97-.512 2.67a5.4 5.4 0 0 1-1.268 1.949c-.55.56-1.215.992-1.948 1.268c-.7.272-1.5.458-2.67.512c-1.174.054-1.548.066-4.536.066s-3.362-.013-4.535-.066c-1.17-.053-1.97-.24-2.67-.512a5.4 5.4 0 0 1-1.949-1.268a5.4 5.4 0 0 1-1.269-1.948c-.271-.7-.457-1.5-.511-2.67C1.012 15.361 1 14.987 1 12s.013-3.362.066-4.534s.24-1.972.511-2.672a5.4 5.4 0 0 1 1.27-1.948a5.4 5.4 0 0 1 1.947-1.269c.7-.271 1.5-.457 2.67-.511m8.98 1.98c-1.16-.053-1.508-.064-4.445-.064s-3.285.011-4.445.064c-1.073.049-1.655.228-2.043.379c-.513.2-.88.437-1.265.822a3.4 3.4 0 0 0-.822 1.265c-.151.388-.33.97-.379 2.043c-.053 1.16-.064 1.508-.064 4.445s.011 3.285.064 4.445c.049 1.073.228 1.655.379 2.043c.176.477.457.91.822 1.265c.355.365.788.646 1.265.822c.388.151.97.33 2.043.379c1.16.053 1.507.064 4.445.064s3.285-.011 4.445-.064c1.073-.049 1.655-.228 2.043-.379c.513-.2.88-.437 1.265-.822c.365-.355.646-.788.822-1.265c.151-.388.33-.97.379-2.043c.053-1.16.064-1.508.064-4.445s-.011-3.285-.064-4.445c-.049-1.073-.228-1.655-.379-2.043c-.2-.513-.437-.88-.822-1.265a3.4 3.4 0 0 0-1.265-.822c-.388-.151-.97-.33-2.043-.379m-5.85 12.345a3.669 3.669 0 0 0 4-5.986a3.67 3.67 0 1 0-4 5.986M8.002 8.002a5.654 5.654 0 1 1 7.996 7.996a5.654 5.654 0 0 1-7.996-7.996m10.906-.814a1.337 1.337 0 1 0-1.89-1.89a1.337 1.337 0 0 0 1.89 1.89" clip-rule="evenodd"/></svg>`, 
                 "Twitter":`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518a3.3 3.3 0 0 0 1.447-1.817a6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429a3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218a3.2 3.2 0 0 1-.865.115a3 3 0 0 1-.614-.057a3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/></svg>`
             },
+            
+            showPublished: true,
+            type: 1,
+
+            changeSection(type) {
+                if(type == "publish"){
+                    this.showPublished = true;
+                    $wire.setType(1)
+                    this.type = 1
+                } else{
+                    this.showPublished = false;
+                    $wire.setType(0)
+                    this.type = 0
+                }
+            }
         }))
     </script>
     @endscript

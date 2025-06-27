@@ -29,7 +29,7 @@ class Home extends Component
 
     public function getArticles()
     {
-        return Post::paginate(1);
+        return Post::where("publish", true)->paginate(1);
     }
 
     public function render()

@@ -21,8 +21,11 @@ class AddNewArticle extends Component
     public $availCategoriesKeys = [];
     public $availCategories = array();
 
+    private $publish = false;
+
     public function save()
     {
+
         $this->validate([
             'title' => "required|min:5",
             'contents' => "required|min:15"
@@ -34,7 +37,8 @@ class AddNewArticle extends Component
             'title' => $this->title,
             'subtitle' => Str::slug($this->title, '-'),
             'content' => $this->contents,
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'publish' => $this->publish
         ]);
 
         if($ca == count($this->categories)){
@@ -69,9 +73,21 @@ class AddNewArticle extends Component
 
             $this->availCategories = [];
             
-            return $this->dispatch('status-message', "success", "your article successfully published");
+            if($this->publish){
+                $type = "published";
+            } else{
+                $type = "drafted";
+            }
+            return $this->dispatch('status-message', "success", "your article successfully $type");
         } else{
-            return $this->dispatch('status-message', "error", "failed to publish your article!");
+            
+            if($this->publish){
+                $type = "publish";
+            } else{
+                $type = "draft";
+            }
+
+            return $this->dispatch('status-message', "error", "failed to $type your article!");
         }
     }
 
@@ -90,8 +106,12 @@ class AddNewArticle extends Component
 
 
     #[On("userInput")]
-    public function getContents($contents, $categories, $availCategories)
+    public function getContents($contents, $categories, $availCategories, $type = "publish")
     {
+        if($type == "publish"){
+            $this->publish = true;
+        }
+
         $this->contents = $contents;
         $this->availCategoriesKeys = $availCategories;
         $structuredCategories = Arr::map($categories, function(string $value, string $key) {

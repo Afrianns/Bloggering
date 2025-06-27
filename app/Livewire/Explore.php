@@ -36,7 +36,9 @@ class Explore extends Component
 
     public function searching()
     {
-       return Post::search($this->categoryFilter . $this->search)->paginate(1);
+       return Post::search($this->categoryFilter . $this->search)->options([
+        "filters" => "publish:1"
+       ])->paginate(1);
     }
 
     public function filterByCategory(string $category, $idx = null)

@@ -15,6 +15,7 @@ class Post extends Model
         'subtitle',
         'content',
         'user_id',
+        'publish'
     ];
 
     public function user()
@@ -34,7 +35,8 @@ class Post extends Model
             'title' => $this->title,
             'content' => $this->content,
             'category' => $this->categories()->get(),
-            'user' => $this->user()->get()
+            'user' => $this->user()->get(),
+            'publish' => $this->publish
 
         ];
     }

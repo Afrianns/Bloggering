@@ -118,7 +118,7 @@ return [
         'index-settings' => [
             Post::class => [
                 'searchableAttributes' => ['id', 'title', 'content', "category", "user"],
-                'attributesForFaceting'=> ['user.id','category.name'],
+                'attributesForFaceting'=> ['user.id','category.name', 'publish'],
             ],
         ],
     ],

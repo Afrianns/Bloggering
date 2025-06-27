@@ -1,11 +1,13 @@
 <div @class(['ml-5' => $margin]) x-data="commentFunction">
     @foreach ($comments as $key => $comment)
         <div class="my-5" wire:key="{{ $key }}">
-           @if ($comment->trashed())
+           @if ($comment->trashed() && $comment->replies()->count() > 0)
             <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
                 <p class="text-gray-600">Deleted Comment</p>
             </div>
-           @else
+           @endif
+           
+           @if(!$comment->trashed())
            <div class="flex ml-auto mb-2">
                 <span class="text-[#ff2828] cursor-pointer hover:underline ml-auto" x-on:click="deleteComment('{{$comment->id}}')">Delete</span>
             </div>

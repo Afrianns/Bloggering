@@ -20,32 +20,38 @@ class Profile extends Component
     public $search = '';
     private $articles;
 
+    public $type = "1";
+
     public function mount(string $uuid)
     {   
         $this->uuid = $uuid;
+
         $this->user = User::where("id", $uuid)->first();
 
-        // dd($this->user->articles()->get());
-        $this->articles = $this->loadArticlesUser();
     }
+
+    public function setType(string $type)
+    {
+        $this->type = $type;
+    }
+
 
     public function searchArticles()
     {
         $this->articles = $this->loadArticlesUser();
     }
 
-
     private function loadArticlesUser()
     {
         return Post::search($this->search)->options([
-                'filters' => "user.id:$this->uuid"
+                'filters' => "user.id:$this->uuid AND publish:$this->type"
             ])->paginate(1);
     }
 
     public function render()
     {
-        
-        return view('livewire.profile',[
+        $this->searchArticles();
+        return view('livewire.profile', [
             "articles" => $this->articles
         ]);
     }
