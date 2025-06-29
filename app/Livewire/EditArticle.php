@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Category_post;
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
@@ -28,6 +27,8 @@ class EditArticle extends Component
     public $article;
 
     public $currentArticleUuid = '';
+
+    private $publish = false;
 
     public function mount(string $uuid)
     {
@@ -54,12 +55,15 @@ class EditArticle extends Component
             'contents' => "required|min:15"
         ]);
         
-        Post::where("id", $this->currentArticleUuid)->update([
-            'title' => $this->title,
-            'subtitle' => Str::slug($this->title, '-'),
-            'content' => $this->contents,
-            'user_id' => Auth::user()->id
-        ]);
+        $article = Post::find($this->currentArticleUuid);
+        
+        $article->title = $this->title;
+        $article->subtitle = Str::slug($this->title, '-');
+        $article->content = $this->contents;
+        $article->user_id = Auth::user()->id;
+        $article->publish = $this->publish;
+
+        $article->update();
         
         $ca = Category::upsert($this->categories, ['name']);
 
@@ -95,9 +99,22 @@ class EditArticle extends Component
 
             $this->categories = [];
             $this->contents = '';
-            return $this->dispatch('status-message', "success", "your article successfully published");
+
+            if($this->publish){
+                $type = "published";
+            } else{
+                $type = "drafted";
+            }
+            return $this->dispatch('status-message', "success", "Updated, your article successfully $type");
         } else{
-            return $this->dispatch('status-message', "error", "failed to publish your article!");
+            
+            if($this->publish){
+                $type = "publish";
+            } else{
+                $type = "draft";
+            }
+
+            return $this->dispatch('status-message', "error", "failed to $type your article!");
         }
     }
 
@@ -105,13 +122,11 @@ class EditArticle extends Component
     {
         $data = Post::where("id", $this->currentArticleUuid)->first();
 
-        $notDeletedCategories = [];
         $deletedCategories = [];
 
 
         $result = $this->findNotMatchInArray($data->categories()->get(), $this->availCategoriesKeys, "spl-category-id");
 
-        $notDeletedCategories = $result[0];
         $deletedCategories = $result[1];
 
         // foreach ($data->categories()->get() as $categoryExist) {
@@ -147,11 +162,15 @@ class EditArticle extends Component
         return $result;
     }
 
-    #[On("userInput")]
-    public function getContents($contents, $categories)
+    #[On("userInputEdit")]
+    public function getContents($contents, $categories,$type = "publish")
     {
         $this->contents = $contents;
         // $this->availCategoriesKeys = $availCategories;
+
+        if($type == "publish"){
+            $this->publish = true;
+        }
 
 
         $CategoryDB = Category::all();

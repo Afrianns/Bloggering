@@ -16,6 +16,8 @@ class Comment extends Component
     public $margin;
     public $comments;
 
+    public $ownerUserIdArticle;
+
     public $reply = [];
 
     public $editedComment = [];

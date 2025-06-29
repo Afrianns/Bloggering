@@ -1,5 +1,5 @@
 <div class="text-white mx-auto w-full" x-data="articleEditFunction">
-    <h1 class="text-xl">Add New Article</h1>
+    <h1 class="text-xl">Edit Article</h1>
     <div class="mx-auto card my-5">
         <form action="" class="text-gray-100 text-sm" wire:submit="save">
             <section class="my-3">
@@ -39,9 +39,9 @@
                 <div>@error('contents') <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $message }}</p> @enderror</div>
             </section>
             <div class="flex items-center justify-between gap-x-3">
-                <span class="bg-orange-500 button opacity-50 cursor-progress" wire:loading>loading...</span>
-                <Button type="submit" class="bg-orange-500 button" @click="dispatchInputedData()" wire:loading.remove>Save Article</Button>
-                <Button class="bg-gray-500 button">Draft Article</Button>
+                <span class="border border-gray-600 border-dashed button opacity-50 cursor-progress" wire:loading>loading...</span>
+                <Button class="bg-orange-500 button" @click="dispatchInputedData()" wire:loading.remove>Publish Article</Button>
+                <Button class="bg-gray-500 button" @click="dispatchInputedDataDraft()" wire:loading.remove>Draft Article</Button>
             </div>
         </form>
     </div>
@@ -87,10 +87,23 @@
             })
         },
         dispatchInputedData(){
-            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.displayedCategories});
-            
+            $wire.dispatchSelf('userInputEdit', 
+                {
+                    "contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), 
+                    "categories": this.displayedCategories
+                }
+            );
         },
 
+        dispatchInputedDataDraft(){
+            $wire.dispatchSelf('userInputEdit', 
+               {
+                    "contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""),
+                    "categories": this.displayedCategories, 
+                    "type": "draft"
+                }
+            );
+        },
         get filteredAvailCategories() {
 
             return this.availCategoriesValues.filter((data,idx) => {

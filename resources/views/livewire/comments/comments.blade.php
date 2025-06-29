@@ -7,7 +7,7 @@
         <p class="my-1 py-1 px-2 bg-red-500 rounded">{{ $error }}</p>
     @endforeach
     
-    <livewire:comments.comment :comments="$comments->comments()->get()">
+    <livewire:comments.comment :comments="$comments->comments()->get()" :ownerUserIdArticle="$ownerUserIdArticle">
     @script
     <script>
         Alpine.data("commentsFunction", () => ({

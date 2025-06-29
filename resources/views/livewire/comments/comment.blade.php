@@ -8,9 +8,11 @@
            @endif
            
            @if(!$comment->trashed())
-           <div class="flex ml-auto mb-2">
-                <span class="text-[#ff2828] cursor-pointer hover:underline ml-auto" x-on:click="deleteComment('{{$comment->id}}')">Delete</span>
-            </div>
+            @if ($comment->user->id === Auth::user()->id)
+                <div class="flex ml-auto mb-2">
+                    <span class="text-[#ff2828] cursor-pointer hover:underline ml-auto" x-on:click="deleteComment('{{$comment->id}}')">Delete</span>
+                </div>
+           @endif
             <div class="border border-gray-500 rounded-md py-3 px-5 flex items-center gap-x-2">
                 <section class="basis-[5%]">
                     @php
@@ -30,7 +32,12 @@
                 <section class="basis-[95%]">
                     <div class="my-1 flex justify-between items-center">
                         <section class="leading-4">
-                            <h3>{{ $comment->user->name }}</h3>
+                            <div class="flex gap-x-2 items-center">
+                                <h3>{{ $comment->user->name }}</h3>
+                                @if ($comment->user->id == $ownerUserIdArticle)
+                                    <p class="text-[8px] px-2 border border-gray-400 rounded-sm">OP</p>
+                                @endif
+                            </div>
                             <span class="text-gray-400 text-xs">{{ $comment->user->email }}</span>
                         </section>
                         @php
@@ -71,7 +78,7 @@
                @enderror
             </div>
            @endif 
-            <livewire:comments.comment :comments="$comment->replies()->get()" :margin="true" >
+            <livewire:comments.comment :comments="$comment->replies()->get()" :margin="true" :ownerUserIdArticle="$ownerUserIdArticle">
         </div>
     @endforeach
     @script

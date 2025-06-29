@@ -31,31 +31,40 @@
             <a href="/profile/edit/{{ $user->id }}" class="hover:underline text-orange-500 text-sm">Edit</a>
         @endif
     </div>
-    <div class="flex justify-center gap-x-3 items-center my-5 text-sm">
-        <span @click="changeSection('publish')" class="hover:underline cursor-pointer" :class="{ 'underline': showPublished }">Published articles</span>
-        <span @click="changeSection('unpublished')" class="hover:underline cursor-pointer" :class="{ 'underline': !showPublished }">Unpublished articles</span>
-    </div>
-    <div class="flex justify-between items-center mt-5">
-        <h3 >All Articles</h3>
-        <form action="" wire:submit="searchArticles" class="flex items-center gap-x-2 text-white">
-            <input type="text" wire:model="search" class="border p-1 px-2 border-gray-100 block rounded"name="title" id="title">
-            <div class="w-[100px] mx-auto">
-                <button class="button bg-amber-600">
-                    search
-                </button>
-            </div>
-        </form>
-    </div>
-    @if ($articles->count() > 0)
-        <template x-if="{{ $type }} != type">
-            <p class="text-center my-5">loading...</p>
-        </template>
-        <template x-if="{{ $type }} == type"">
+    @if (Auth::user()->id == $user->id)
+        <div class="flex justify-center gap-x-3 items-center my-5 text-sm">
+            <span @click="changeSection('publish')" class="hover:underline cursor-pointer" :class="{ 'underline': type == 1 }">Published articles</span>
+            <span @click="changeSection('unpublished')" class="hover:underline cursor-pointer" :class="{ 'underline': type == 0 }">Unpublished articles</span>
+        </div>
+    @endif
+
+    <template x-if="{{ $type }} != type">
+        <p class="text-center my-5">loading...</p>
+    </template>
+    <template x-if="{{ $type }} == type">
+        <div>
+        <div class="flex justify-between items-center mt-5">
+            <h3 >All Articles</h3>
+            <form wire:submit="searchArticles" class="flex items-center gap-x-2 text-white">
+                <input type="text" wire:model="search" class="border p-1 px-2 border-gray-100 block rounded" name="title" id="title">
+                <div class="w-[100px] mx-auto">
+                    <button class="button bg-amber-600">
+                        search
+                    </button>
+                </div>
+            </form>
+        </div>
+        @if ($articles->count() > 0)
             @foreach ($articles as $article)
                 <section class="card text-white my-5">
                     <div class="flex justify-between items-center my-5">
                         <div>
-                            <h1>{{ $article->title }}</h1>
+                            <div class="flex items-center gap-x-2">
+                                <h1>{{ $article->title }}</h1>
+                                @if (!$article->publish)
+                                    <span class="text-xs border border-gray-600 w-fit py-1 px-3 rounded mx-auto">Drafted</span>
+                                @endif
+                            </div>
                             <span class="text-gray-400">{{ $article->subtitle }}</span>
                         </div>
                         <p class="text-gray-300 text-sm">{{ Carbon\Carbon::parse($article->created_at)->locale("id_ID")->isoFormat("d MMMM g - kk:hh") }}</p>
@@ -76,13 +85,14 @@
                     </div>
                 </section>
             @endforeach
-        </template>
-        {{ $articles->links() }}
-    @else
-        <div class="text-center text-gray-200 my-5 text-sm">
-            <p>No Articles Found</p>
+            {{ $articles->links() }}
+        @else
+            <div class="text-center text-gray-200 my-5 text-sm">
+                <p>No Articles Found</p>
+            </div>
+        @endif
         </div>
-    @endif
+    </template>
 
     @script
     <script>
@@ -95,16 +105,16 @@
                 "Twitter":`<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334q.002-.211-.006-.422A6.7 6.7 0 0 0 16 3.542a6.7 6.7 0 0 1-1.889.518a3.3 3.3 0 0 0 1.447-1.817a6.5 6.5 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.32 9.32 0 0 1-6.767-3.429a3.29 3.29 0 0 0 1.018 4.382A3.3 3.3 0 0 1 .64 6.575v.045a3.29 3.29 0 0 0 2.632 3.218a3.2 3.2 0 0 1-.865.115a3 3 0 0 1-.614-.057a3.28 3.28 0 0 0 3.067 2.277A6.6 6.6 0 0 1 .78 13.58a6 6 0 0 1-.78-.045A9.34 9.34 0 0 0 5.026 15"/></svg>`
             },
             
-            showPublished: true,
+            // showPublished: true,
             type: 1,
 
             changeSection(type) {
                 if(type == "publish"){
-                    this.showPublished = true;
+                    // this.showPublished = true;
                     $wire.setType(1)
                     this.type = 1
                 } else{
-                    this.showPublished = false;
+                    // this.showPublished = false;
                     $wire.setType(0)
                     this.type = 0
                 }

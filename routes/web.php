@@ -17,7 +17,8 @@ Route::get("/", function() {
 });
 
 Route::middleware("guest")->group(function() {
-    Route::post('/login', [UserManager::class, 'loginPost'])->name('login-post');
+
+    Route::post('/login', [UserManager::class, 'loginPost'])->middleware("throttle:login")->name('login-post');
     Route::get('/login', [UserManager::class, 'login'])->name("login");
     
     Route::post('/register', [UserManager::class, 'registerPost'])->name('register-post');
@@ -41,4 +42,4 @@ Route::middleware("auth")->group(function () {
     Route::get('/profile/{uuid}', Profile::class);
     Route::get("/profile/edit/{uuid}", EditProfile::class);
     
-})->middleware("auth");
+});

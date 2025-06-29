@@ -14,6 +14,8 @@ class Comments extends Component
     public $post_id;
     public $comments;
 
+    public $ownerUserIdArticle;
+
     public function commenting()
     {
         $validated = $this->validate([

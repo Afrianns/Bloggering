@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class UserManager extends Controller
 {
@@ -44,9 +45,10 @@ class UserManager extends Controller
         if (Auth::attempt($validated)){
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
-        }
+        } 
 
         return redirect('login')->with("message", "User not found! Make sure credentials are match");
+
     }
 
     public function logoutPost(Request $request) {

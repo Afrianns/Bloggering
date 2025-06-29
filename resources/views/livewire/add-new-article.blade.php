@@ -39,7 +39,7 @@
             </section>
             <div class="flex items-center justify-between gap-x-3">
                 <span class="border border-gray-600 border-dashed button opacity-50 cursor-progress" wire:loading>loading...</span>
-                <Button type="submit" class="bg-orange-500 button" @click="dispatchInputedData()" wire:loading.remove>Publish</Button>
+                <Button class="bg-orange-500 button" @click="dispatchInputedData()" wire:loading.remove>Publish</Button>
                 <Button class="bg-gray-600 button" @click="dispatchInputedDataDraft()" wire:loading.remove>Draft</Button>
             </div>
         </form>
@@ -99,11 +99,24 @@
 
         dispatchInputedData(){
             // console.log(this.selectedCategories, this.selectedCategoriesKeys, this.displayedCategories)
-            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys});
+            $wire.dispatchSelf('userInput', 
+                {
+                    "contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), 
+                    "categories": this.selectedCategories, 
+                    "availCategories": this.selectedCategoriesKeys
+                }
+            )
         },
         
         dispatchInputedDataDraft(){
-            $wire.dispatchSelf('userInput', {"contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), "categories": this.selectedCategories, "availCategories": this.selectedCategoriesKeys}, "draft");
+            $wire.dispatchSelf('userInput', 
+                {
+                    "contents": this.contents.replaceAll("&nbsp;", " ").replaceAll(/style=".*"/ig, ""), 
+                    "categories": this.selectedCategories, 
+                    "availCategories": this.selectedCategoriesKeys,
+                    "type": "draft"
+                } 
+            )
         },
 
         get filteredAvailCategories() {
