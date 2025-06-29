@@ -49,6 +49,7 @@
             notifications: [],
 
             broadcasted(id, notification = []) {
+
                 if(notification.length > 0){
                     this.notifications.push(...notification)
                 } else{
